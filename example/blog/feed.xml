@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+	<channel>
+	<title>Blog</title>
+	<link>https://www.example.com//blog</link>
+	<description>Random stuff I post...</description>
+	
+	<item>
+		<title>Test 2</title>
+		<link>https://www.example.com//blog/posts/test2.html</link>
+		<description>
+		<![CDATA[
+		<p>
+		&nbsp;<a href="https://www.example.com//blog/posts/test2.html">...</a>
+		</p>
+		<p><a href="https://www.example.com//blog/posts/test2.html">Read More</a></p>
+		]]>
+		</description>
+		<pubDate></pubDate>
+	</item>
+	
+	<item>
+		<title>Test 1</title>
+		<link>https://www.example.com//blog/posts/test1.html</link>
+		<description>
+		<![CDATA[
+		<p>
+		&nbsp;<a href="https://www.example.com//blog/posts/test1.html">...</a>
+		</p>
+		<p><a href="https://www.example.com//blog/posts/test1.html">Read More</a></p>
+		]]>
+		</description>
+		<pubDate></pubDate>
+	</item>
+	
+	<item>
+		<title>Sed Finibus</title>
+		<link>https://www.example.com//blog/posts/sed-finibus.html</link>
+		<description>
+		<![CDATA[
+		<p>
+		&nbsp;<a href="https://www.example.com//blog/posts/sed-finibus.html">...</a>
+		</p>
+		<p><a href="https://www.example.com//blog/posts/sed-finibus.html">Read More</a></p>
+		]]>
+		</description>
+		<pubDate></pubDate>
+	</item>
+	
+	<item>
+		<title>Proin Quam</title>
+		<link>https://www.example.com//blog/posts/proin-quam.html</link>
+		<description>
+		<![CDATA[
+		<p>
+		&nbsp;<a href="https://www.example.com//blog/posts/proin-quam.html">...</a>
+		</p>
+		<p><a href="https://www.example.com//blog/posts/proin-quam.html">Read More</a></p>
+		]]>
+		</description>
+		<pubDate></pubDate>
+	</item>
+	
+	<item>
+		<title>Test 3</title>
+		<link>https://www.example.com//blog/posts/test3.html</link>
+		<description>
+		<![CDATA[
+		<p>
+		&nbsp;<a href="https://www.example.com//blog/posts/test3.html">...</a>
+		</p>
+		<p><a href="https://www.example.com//blog/posts/test3.html">Read More</a></p>
+		]]>
+		</description>
+		<pubDate></pubDate>
+	</item>
+	
+	<item>
+		<title>Test 4</title>
+		<link>https://www.example.com//blog/posts/test4.html</link>
+		<description>
+		<![CDATA[
+		<p>
+		&nbsp;<a href="https://www.example.com//blog/posts/test4.html">...</a>
+		</p>
+		<p><a href="https://www.example.com//blog/posts/test4.html">Read More</a></p>
+		]]>
+		</description>
+		<pubDate></pubDate>
+	</item>
+	
+	<item>
+		<title>Test 5</title>
+		<link>https://www.example.com//blog/posts/test5.html</link>
+		<description>
+		<![CDATA[
+		<p>
+		&nbsp;<a href="https://www.example.com//blog/posts/test5.html">...</a>
+		</p>
+		<p><a href="https://www.example.com//blog/posts/test5.html">Read More</a></p>
+		]]>
+		</description>
+		<pubDate></pubDate>
+	</item>
+	
+	<item>
+		<title>Test 6</title>
+		<link>https://www.example.com//blog/posts/test6.html</link>
+		<description>
+		<![CDATA[
+		<p>
+		&nbsp;<a href="https://www.example.com//blog/posts/test6.html">...</a>
+		</p>
+		<p><a href="https://www.example.com//blog/posts/test6.html">Read More</a></p>
+		]]>
+		</description>
+		<pubDate></pubDate>
+	</item>
+	
+	</channel>
+</rss>

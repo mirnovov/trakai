@@ -1,0 +1,10 @@
+{
+	"site_url": "https://www.example.com/",
+	"has_pagination": true,
+	"page_limit": 2,
+	"feed_description": "Random stuff I post...",
+	"has_preview": true,
+	"preview_class": "testclass",
+	"has_archive": true,
+	"has_tags": true
+}

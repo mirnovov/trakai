@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+	<channel>
+	<title>{{ blog_title }}</title>
+	<link>{{ site_url }}/{{ output_path }}</link>
+	<description>{{ feed_description }}</description>
+	{% for item in posts %}
+	<item>
+		<title>{{ item.title }}</title>
+		<link>{{ site_url }}{{ item.path }}</link>
+		<description>
+		<![CDATA[
+		<p>
+		{{ summary }}&nbsp;<a href="{{ site_url }}{{ item.path }}">...</a>
+		</p>
+		<p><a href="{{ site_url }}{{ item.path }}">Read More</a></p>
+		]]>
+		</description>
+		<pubDate>{{ item.rfc_2822_date }}</pubDate>
+	</item>
+	{% endfor %}
+	</channel>
+</rss>
