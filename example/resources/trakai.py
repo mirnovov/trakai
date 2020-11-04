@@ -52,7 +52,7 @@ def readContent(filename):
     content = {}
     
     if filename.endswith(('.md', '.markdown')):
-        md = markdown.Markdown(extensions=gl("markdown"))
+        md = markdown.Markdown(extensions=gl("markdown_extensions"))
         try:
             text = md.convert(text)
             for k, v in md.Meta.items(): 
@@ -204,7 +204,7 @@ def main():
         'has_pagination': False,
         'has_tag_pagination': False,
         'page_limit': 5,
-        'markdown': ['def_list','admonition','tables'], #meta is always loaded, see below
+        'markdown_extensions': ['def_list','admonition','tables'], #meta is always loaded, see below
         'has_preview': False,
         'preview_class': None,
         'has_archive': False,
@@ -216,7 +216,7 @@ def main():
     # Set working directory, and if params.json exists, load it
     if os.path.isfile(parampath): params.update(json.loads(fread(parampath)))
     
-    params['markdown'].append('meta') #meta should always be loaded
+    params['markdown_extensions'].append('meta') #meta should always be loaded
     if params['site_path'] is not None: os.chdir(params['site_path'])
     
     # Set up Jinja, and load layouts.
