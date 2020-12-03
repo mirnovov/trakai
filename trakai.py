@@ -68,6 +68,9 @@ def readContent(filename):
          e = 0
          for k, v, e in readHeaders(text): content[k] = v
          text = text[e:]
+         
+    if "<!-- nvpr -->" in text:
+        content["preview"] = re.sub("<a ?.*?>|<\/a>","",text.split("<!-- nvpr -->")[0])
 
     return {
         **content,
@@ -248,3 +251,4 @@ def main():
     
 
 if __name__ == '__main__': main()
+
