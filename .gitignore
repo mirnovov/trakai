@@ -1,9 +1,16 @@
-_site
+# python
 *.pyc
 __pycache__
-.coverage
-htmlcov
-*.sw?
+*.pyc
+*.pyo
+*.egg-info/
+venv/
+ENV/
+dist/
+
+# trakai
+example/resources/backup/
+
+# other
 .DS_Store
-venv
-.nova
+.nova/
