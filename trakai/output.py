@@ -29,60 +29,60 @@ def makePages(env, src, dst, layout):
 	# Load layouts.
 	with os.scandir(src) as folder:
 		for item in folder:
-			if not item.is_file() or item.name == '.DS_Store': continue
+			if not item.is_file() or item.name == ".DS_Store": continue
 			
 			content = readContent(env,item.path)
 			items.append(content)
-			if 'tags' in content and env.globals['has_tags']: tags.update(content['tags'])
+			if "tags" in content and env.globals["has_tags"]: tags.update(content["tags"])
 			
-		if env.globals['has_tags']: 
-			env.globals['all_tags'] = sorted(tags)
+		if env.globals["has_tags"]: 
+			env.globals["all_tags"] = sorted(tags)
 			
 		for content in items:
-			dst_path = os.path.join(dst,'{}.html'.format(content['name']))
+			dst_path = os.path.join(dst,"{}.html".format(content["name"]))
 			
-			content['path'] = '/' + dst_path
+			content["path"] = "/" + dst_path
 			output = temp.render(content)
 
-			log('Rendering {} => {} ...', item.path, dst_path)
+			log("Rendering {} => {} ...", item.path, dst_path)
 			fwrite(dst_path, output)
 
-	return sorted(items, key=lambda x: x['date'], reverse=True)
+	return sorted(items, key=lambda x: x["date"], reverse=True)
 
 def makeList(env, posts, dst, layout, **params):
 	temp = env.get_template(layout) 
 	   
 	page_params = {
-		'posts': posts,
-		'path': '/' + dst,
-		'name': 'blogindex',
+		"posts": posts,
+		"path": "/" + dst,
+		"name": "blogindex",
 		**params
 	}
 	output = temp.render(page_params)
 	
-	log('Rendering list => {} ...', dst)
+	log("Rendering list => {} ...", dst)
 	fwrite(dst, output)
 	
 def makePaginatedList(env, posts, dst, layout, **params): 
 	i, r, pagenum = 0, 2, 1
-	pages = [os.path.join(dst,'index.html')]
+	pages = [os.path.join(dst,"index.html")]
 	
-	while r < math.ceil(9 / env.globals['page_limit']):
-		pages.append(os.path.join(dst,'pages','{}.html'.format(r)))
+	while r < math.ceil(9 / env.globals["page_limit"]):
+		pages.append(os.path.join(dst,"pages","{}.html".format(r)))
 		r += 1
 
 	while i < len(posts):
 	   makeList(env,
-		   		posts[i:i + env.globals['page_limit']],
+		   		posts[i:i + env.globals["page_limit"]],
 				pages[pagenum - 1],
-				'list.html',
-				name='blogindex{}'.format(pagenum),
+				"list.html",
+				name="blogindex{}".format(pagenum),
 				pagenum=pagenum,
 				pages=pages,
 				pagecount=len(pages),
 				**params)
 		
-	   i += env.globals['page_limit']
+	   i += env.globals["page_limit"]
 	   pagenum += 1
    
 def insertPreview(env, post, dst, layout):
@@ -90,7 +90,7 @@ def insertPreview(env, post, dst, layout):
 		start, end, tag, nest = None, None, None, 0
 		
 		def handle_starttag(self, tag, attrs):
-			if env.globals['preview_class'] in self.getClasses(attrs): 
+			if env.globals["preview_class"] in self.getClasses(attrs): 
 				self.start = self.getpos()[0] - 1
 				self.tag = tag 
 				
@@ -102,11 +102,11 @@ def insertPreview(env, post, dst, layout):
 				elif self.nest > 0: self.nest -= 1
 		
 		def getClasses(self,attrs):
-			classes = list(filter(lambda x: x[0] == 'class', attrs))
+			classes = list(filter(lambda x: x[0] == "class", attrs))
 			return classes[0][1].split(" ") if classes else []
 	
 	page = fread(dst)
-	fwrite(os.path.join(env.globals['backup_path'],"index." + str(time.time())[:7] + ".html"), page)
+	fwrite(os.path.join(env.globals["backup_path"],"index." + str(time.time())[:7] + ".html"), page)
 	
 	parser = PreviewFinder()
 	parser.feed(page)
@@ -114,15 +114,15 @@ def insertPreview(env, post, dst, layout):
 	page[parser.start] += "\n" + env.get_template(layout).render(post=post)
 	
 	del page[parser.start + 1 : parser.end] #delete remaining old lines
-	log('Inserting preview => {} ...', dst)
+	log("Inserting preview => {} ...", dst)
 	fwrite(dst,"\n".join(page))
 	
 def getTaggedPosts(env,posts):
-	tags = { tag : [] for tag in list(env.globals['all_tags']) }
+	tags = { tag : [] for tag in list(env.globals["all_tags"]) }
 	
 	for post in posts: 
-		if 'tags' not in post: continue
-		for tag in post['tags']:
+		if "tags" not in post: continue
+		for tag in post["tags"]:
 			tags[tag].append(post)
 				
 	return tags
