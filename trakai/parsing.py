@@ -28,7 +28,8 @@ def fwrite(filename, text):
 		os.makedirs(basedir)
 	with open(filename, "w") as f: f.write(text)
 
-def log(msg, *args):
+def log(env, msg, *args):
+	if env.globals["__silent"] is True: return
 	sys.stderr.write(msg.format(*args) + "\n")
 	
 def readHeaders(text):
@@ -55,7 +56,7 @@ def readContent(env, filename):
 				if len(v) > 1: content[k] = "\n".join(v)
 				else: content[k] = v[0]
 		except ImportError as e:
-			log("WARNING: Cannot render Markdown in {}: {}", filename, str(e))
+			log(env,"WARNING: Cannot render Markdown in {}: {}", filename, str(e))
 			
 	if "tags" in content and env.globals["has_tags"]: 
 		content["tags"] = list(map(lambda x: x.strip().replace(" ",""),content["tags"].split(",")))

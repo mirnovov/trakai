@@ -17,79 +17,36 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
 # OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import os, json, shutil, datetime, argparse
-from os import path
-from jinja2 import Environment, FileSystemLoader
-from .output import *
-from .parsing import fread, log
+import argparse, os
 from .version import __version__
+from .build import buildSite
 
+def checkPath(path):
+    if not path or not os.path.exists(path):
+        raise argparse.ArgumentTypeError(path + "is not a valid path")
+    return path
+    
+def checkDir(path):
+    checkPath(path)
+    
+    if not os.path.isdir(path): 
+        raise argparse.ArgumentTypeError(path + "is not a directory")
+    return path
+    
 def main():
-    # Default parameters.
-    params = {
-        "site_path": os.getcwd(),
-        "posts_path": "resources/content",
-        "templates_path": "resources/templates",
-        "backup_path": "resources/backup",
-        "output_path": "blog",
-        "blog_title": "Blog",
-        "site_url": "http://www.example.com",
-        "feed_description": "Placeholder Description",
-        "current_year": datetime.datetime.now().year,
-        "has_pagination": False,
-        "has_tag_pagination": False,
-        "page_limit": 5,
-        "markdown_extensions": ["def_list","admonition","tables"], #meta is always loaded, see below
-        "has_preview": False,
-        "preview_class": None,
-        "has_archive": False,
-        "has_tags": False,
-        "has_feed": True
-    }
-    parampath = params["site_path"] + "/resources/trakai.json"
+    parser = argparse.ArgumentParser(prog="trakai", description="a simple blog generator designed specially to integrate into existing sites")
     
-    # Set working directory, and if params.json exists, load it
-    if path.isfile(parampath): 
-        params.update(json.loads(fread(parampath)))
+    parser.add_argument("path", nargs="?", default=os.getcwd(), type=checkDir, help="the path of the site. Defaults to the current directory")
+    parser.add_argument("-v","--version", action="version", version="trakai v" + __version__, help="outputs the installed version")
+    parser.add_argument("-s","--silent", action="store_true", help="generates the site without printing information to stdout")
+    parser.add_argument("-c", "--config", default=None, type=checkPath, help="specifies an alternate location for configuration files")
     
-    params["markdown_extensions"].append("meta") #meta should always be loaded
+    args = vars(parser.parse_args())
     
-    # Set up Jinja, and load layouts.
-    env = Environment(
-        loader = FileSystemLoader(params["templates_path"]),
-        autoescape = False
-    )
-    env.globals = params 
-    
-    # Create a new blog directory from scratch, and create blog posts
-    if path.isdir(env.globals["output_path"]): 
-        shutil.rmtree(env.globals["output_path"])
-    
-    posts = makePages(env,env.globals["posts_path"], path.join(env.globals["output_path"],"posts"), "post.html")
-
-    # Create blog indices.    
-    if env.globals["has_pagination"]: 
-        makePaginatedList(env,posts, env.globals["output_path"], "list.html", page_mode="regular")
-    else: 
-        makeList(env,posts, path.join(env.globals["output_path"],"index.html"), "list.html", page_mode="regular")
-   
-    if env.globals["has_feed"]: 
-        makeList(env,posts,path.join(env.globals["output_path"],"feed.xml"),"feed.xml",page_mode="feed")
+    if args["config"] is None: 
+        args["config"] = "resources/trakai.json"
         
-    if env.globals["has_archive"]: 
-        makeList(env,posts,path.join(env.globals["output_path"],"archive.html"), "list.html", page_mode="archive")
-        
-    if env.globals["has_preview"]: 
-        insertPreview(env,posts[0],"index.html","excerpt.html")
+    buildSite(**args)
     
-    if env.globals["has_tags"]:
-        tags = getTaggedPosts(env,posts)
-        for tag in tags:
-            if env.globals["has_tag_pagination"]: 
-                 makePaginatedList(tags[tag], path.join(env.globals["output_path"],"tags/{}/".format(tag.lower())), "list.html", page_mode="tags", current_tag=tag)
-            else:  
-                makeList(env,tags[tag], path.join(env.globals["output_path"],"tags/{}.html".format(tag.lower())), "list.html", page_mode="tags", current_tag=tag)
-    
-
 if __name__ == "__main__": main()
 

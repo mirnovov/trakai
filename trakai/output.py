@@ -44,7 +44,7 @@ def makePages(env, src, dst, layout):
 			content["path"] = "/" + dst_path
 			output = temp.render(content)
 
-			log("Rendering {} => {} ...", item.path, dst_path)
+			log(env,"Rendering {} => {} ...", item.path, dst_path)
 			fwrite(dst_path, output)
 
 	return sorted(items, key=lambda x: x["date"], reverse=True)
@@ -60,7 +60,7 @@ def makeList(env, posts, dst, layout, **params):
 	}
 	output = temp.render(page_params)
 	
-	log("Rendering list => {} ...", dst)
+	log(env,"Rendering list => {} ...", dst)
 	fwrite(dst, output)
 	
 def makePaginatedList(env, posts, dst, layout, **params): 
@@ -114,7 +114,7 @@ def insertPreview(env, post, dst, layout):
 	page[parser.start] += "\n" + env.get_template(layout).render(post=post)
 	
 	del page[parser.start + 1 : parser.end] #delete remaining old lines
-	log("Inserting preview => {} ...", dst)
+	log(env,"Inserting preview => {} ...", dst)
 	fwrite(dst,"\n".join(page))
 	
 def getTaggedPosts(env,posts):

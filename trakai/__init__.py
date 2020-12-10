@@ -19,3 +19,5 @@
 
 from .output import *
 from .parsing import *
+from .build import buildSite
+from .version import __version__
