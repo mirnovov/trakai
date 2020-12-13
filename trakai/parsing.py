@@ -18,19 +18,7 @@
 # OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os, re, sys, datetime, markdown
-
-def fread(filename):
-	with open(filename, "r") as f: return f.read()
-
-def fwrite(filename, text):
-	basedir = os.path.dirname(filename)
-	if not os.path.isdir(basedir) and basedir != "":
-		os.makedirs(basedir)
-	with open(filename, "w") as f: f.write(text)
-
-def log(env, msg, *args):
-	if env.globals["__silent"] is True: return
-	sys.stderr.write(msg.format(*args) + "\n")
+from .utils import fread, fwrite, log
 	
 def readHeaders(text):
 	for match in re.finditer(r"\s*<!--\s*(.+?)\s*:\s*(.+?)\s*-->\s*|.+", text):

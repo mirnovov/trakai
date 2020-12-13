@@ -17,11 +17,11 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
 # OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import os, json, shutil, datetime, argparse
+import os, json, datetime
 from os import path
 from jinja2 import Environment, FileSystemLoader
-from .output import *
-from .parsing import fread, log
+from .output import makePages, makeList, makePaginatedList, insertPreview, getTaggedPosts
+from .utils import fread, log
 from .version import __version__
 
 def buildSite(**args):
@@ -45,7 +45,9 @@ def buildSite(**args):
 		"preview_class": None,
 		"has_archive": False,
 		"has_tags": False,
-		"has_feed": True
+		"has_feed": True,
+		"has_caching": False,
+		"cache_path": "resources/backup/trakai_cache.json",
 	}
 	
 	# If params.json exists, load it
@@ -58,9 +60,14 @@ def buildSite(**args):
 	#though a bespoke solution may be a good future addition
 	params.update({
 		"site_path": args["path"],
-		"__silent": args["config"]
+		"__silent": args["silent"]
 	})
 	
+	if args["cache"]:
+		params["has_caching"] = True
+	elif not args["nocache"]:
+		params["has_caching"] = False
+			
 	# Set up Jinja, and load layouts.
 	env = Environment(
 		loader = FileSystemLoader(params["templates_path"]),
@@ -69,9 +76,11 @@ def buildSite(**args):
 	env.globals = params 
 	
 	# Create a new blog directory from scratch, and create blog posts
-	if path.isdir(env.globals["output_path"]): 
+	if path.isdir(env.globals["output_path"]) and not env.globals["has_caching"]: 
 		shutil.rmtree(env.globals["output_path"])
 	
+	feed_path = path.join(env.globals["output_path"],"feed.xml")
+	archive_path = path.join(env.globals["output_path"],"archive.html")
 	posts = makePages(env,env.globals["posts_path"], path.join(env.globals["output_path"],"posts"), "post.html")
 
 	# Create blog indices.    
@@ -79,12 +88,12 @@ def buildSite(**args):
 		makePaginatedList(env, posts, env.globals["output_path"], "list.html", page_mode="regular")
 	else: 
 		makeList(env,posts,path.join(env.globals["output_path"],"index.html"), "list.html", page_mode="regular")
-   
+
 	if env.globals["has_feed"]: 
-		makeList(env,posts,path.join(env.globals["output_path"],"feed.xml"),"feed.xml",page_mode="feed")
+		makeList(env,posts,feed_path,"feed.xml",page_mode="feed")
 		
 	if env.globals["has_archive"]: 
-		makeList(env,posts,path.join(env.globals["output_path"],"archive.html"), "list.html", page_mode="archive")
+		makeList(env,posts,archive_path, "list.html", page_mode="archive")
 		
 	if env.globals["has_preview"]: 
 		insertPreview(env,posts[0],"index.html","excerpt.html")

@@ -36,14 +36,20 @@ def checkDir(path):
 def main():
     parser = argparse.ArgumentParser(prog="trakai", description="a simple blog generator designed specially to integrate into existing sites")
     
-    parser.add_argument("path", nargs="?", default=os.getcwd(), type=checkDir, help="the path of the site. Defaults to the current directory")
+    parser.add_argument("path", nargs="?", default=os.getcwd(), type=checkDir, help="the path of the site; defaults to the current directory")
     parser.add_argument("-v","--version", action="version", version="trakai v" + __version__, help="outputs the installed version")
     parser.add_argument("-s","--silent", action="store_true", help="generates the site without printing information to stdout")
+    parser.add_argument("-a", "--cache", action="store_true", help="always use the cache, regardless of config, and only write changed files")
+    parser.add_argument("-n", "--nocache", action="store_false", help="never use the cache, regardless of config, and write all files")
     parser.add_argument("-c", "--config", default=None, type=checkPath, help="specifies an alternate location for configuration files")
     
     args = vars(parser.parse_args())
     
-    if args["config"] is None: 
+    if args["cache"] and not args["nocache"]:
+        print("trakai: error: cache and nocache are mutually exclusive")
+        exit(1)
+    
+    elif args["config"] is None: 
         args["config"] = "resources/trakai.json"
         
     buildSite(**args)

@@ -17,15 +17,39 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
 # OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import os, time, math, html
+import os, time, math, html, json, hashlib
 from html.parser import HTMLParser
-from .parsing import readContent, log, fread, fwrite
+from .parsing import readContent
+from .utils import log, fread, fwrite
+
+def checkCache(env,cache,content):
+	name = content["name"]
+	hash = hashlib.md5(str(content).encode("utf-8")).hexdigest()
+	path = content["path"][1:]
+	
+	if name in cache and cache[name] == hash and os.path.isfile(path): 
+		log(env,"Rendering skipped for {} (cached) ...", path)
+		return True
+	
+	cache[name] = hash
+	return False
+	
+def initCache(path):
+	if not os.path.isfile(path):
+		return {}
+	with open(path, "r") as file: 
+		return json.load(file)
+		
+def updateCache(cache,path):
+	with open(path, "w") as file: 
+		json.dump(cache,file)
 
 def makePages(env, src, dst, layout):
 	items = []
 	tags = set([])
-	temp = env.get_template(layout) 
-
+	temp = env.get_template(layout)
+	cache = initCache(env.globals["cache_path"]) if env.globals["has_caching"] else None
+	
 	# Load layouts.
 	with os.scandir(src) as folder:
 		for item in folder:
@@ -38,14 +62,19 @@ def makePages(env, src, dst, layout):
 		if env.globals["has_tags"]: 
 			env.globals["all_tags"] = sorted(tags)
 			
-		for content in items:
-			dst_path = os.path.join(dst,"{}.html".format(content["name"]))
+		for content in items:			
+			content["path"] = os.path.join("/",dst,"{}.html".format(content["name"]))
 			
-			content["path"] = "/" + dst_path
+			if env.globals["has_caching"] and checkCache(env,cache,content): 
+				continue
+				
 			output = temp.render(content)
 
-			log(env,"Rendering {} => {} ...", item.path, dst_path)
-			fwrite(dst_path, output)
+			log(env,"Rendering => {} ...", content["path"][1:])
+			fwrite(content["path"][1:], output)
+			
+	if env.globals["has_caching"]:
+		updateCache(cache,env.globals["cache_path"])
 
 	return sorted(items, key=lambda x: x["date"], reverse=True)
 
