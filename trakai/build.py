@@ -70,7 +70,10 @@ def buildSite(**args):
 			
 	# Set up Jinja, and load layouts.
 	env = Environment(
-		loader = FileSystemLoader(params["templates_path"]),
+		loader = FileSystemLoader([
+			params["templates_path"],
+			path.dirname(__file__) + "/templates/"
+		]),
 		autoescape = False
 	)
 	env.globals = params 

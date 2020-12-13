@@ -1,0 +1,7 @@
+        <h3>Latest from the blog:</h3>
+        <h2><a href="{{ post.path }}">{{ post.title }}</a></h2>
+        <p class="meta">Published on {{ post.neat_date }}</p>
+        <p class="summary">{{ post.prose | striptags | truncate(230) }}</p>
+        <div>
+            <a class="more" href="{{ post.path }}">Read More</a>
+        </div>

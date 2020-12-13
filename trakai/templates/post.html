@@ -1,0 +1,9 @@
+{% extends "page.html" %}
+{% block title %}{{ blog_title }} - {{ title }}{% endblock %}
+{% block content %}
+<article>
+<h1><a href="{{ path }}">{{ title }}</a></h1>
+<p class="meta">Published on {{ neat_date }}</p>
+{{ prose }}
+</article>
+{% endblock %}

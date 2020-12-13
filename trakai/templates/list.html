@@ -1,0 +1,52 @@
+{% extends "page.html" %}
+{% block content %}
+<h1>{{ blog_title }}</h1>
+{% for item in posts %}
+    <article>
+        <h2><a href="{{ item.path }}">{{ item.title }}</a></h2>
+        <p class="meta">Published on {{ item.neat_date }}</p>
+        <p class="summary">{{ item.prose | striptags | truncate(230) }}</p>
+        <div>
+            <a class="more" href="{{ item.path }}">Read More</a>
+        </div>
+    </article>
+{% endfor %}
+<section>
+
+</section>
+{% if has_pagination and page_mode == "regular" and pagecount > 1 %}
+<ul class="pages">
+    <li class="prev">
+        {% if pagenum > 1 %}<a href="/{{ pages[pagenum - 2] }}">Previous</a></li>
+        {% else %}<a class="disabled">Previous</a></li>{% endif %}
+    </li>
+    <li class="num jsonly">
+        <label for="pageList">Page</label>
+        <select id="pageList" name="pageList" onchange="window.location.href=this.value">
+        {% for page in pages %}
+            <option value="/{{ page }}" {% if loop.index == pagenum %} selected {% endif %}>{{ loop.index }}</option>
+        {% endfor %}
+        </select>
+    </li>
+    <li class="next">
+        {% if pagenum < pagecount %}<a href="/{{ pages[pagenum] }}">Next</a></li>
+        {% else %}<a class="disabled">Next</a></li>{% endif %}
+    </li>
+</ul>
+{% endif %}
+{% if page_mode == "regular" %}
+<hr>
+<ul class="horizontal">
+    <li><a class="rss" href="/{{ output_path }}/rss.xml">RSS</a></li>
+    <li><a href="/{{ output_path }}/archive.html">Archives</a></li>
+    {% if has_tags %}
+        <li class="tags">
+            Tags:
+            {% for tag in all_tags %}
+                <a href="/{{ output_path }}/tags/{{ tag }}.html">{{ tag }}</a>
+            {% endfor %}
+        </li>
+    {% endif %}
+</ul>
+{% endif %}
+{% endblock %}
