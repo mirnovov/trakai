@@ -45,14 +45,15 @@ def readContent(env, filename):
 				else: content[k] = v[0]
 		except ImportError as e:
 			log(env,"WARNING: Cannot render Markdown in {}: {}", filename, str(e))
-			
-	if "tags" in content and env.globals["has_tags"]: 
-		content["tags"] = list(map(lambda x: x.strip().replace(" ",""),content["tags"].split(",")))
-			
 	elif filename.endswith((".html", ".htm")):
 		 e = 0
 		 for k, v, e in readHeaders(text): content[k] = v
 		 text = text[e:]
+			
+	if "tags" in content and env.globals["has_tags"]: 
+		content["tags"] = list(map(lambda x: x.strip().replace(" ",""),content["tags"].split(",")))
+			
+	
 		 
 	if "<!-- nvpr -->" in text:
 		content["preview"] = re.sub("<a ?.*?>|<\/a>","",text.split("<!-- nvpr -->")[0])
