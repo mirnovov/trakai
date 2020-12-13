@@ -53,7 +53,8 @@ def readContent(env, filename):
 	if "tags" in content and env.globals["has_tags"]: 
 		content["tags"] = list(map(lambda x: x.strip().replace(" ",""),content["tags"].split(",")))
 			
-	
+	if "date" not in content:
+		content["date"] = datetime.datetime.fromtimestamp(os.stat.st_mtime).strftime("%Y-%m-%d")
 		 
 	if "<!-- nvpr -->" in text:
 		content["preview"] = re.sub("<a ?.*?>|<\/a>","",text.split("<!-- nvpr -->")[0])
