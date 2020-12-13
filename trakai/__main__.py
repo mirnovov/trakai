@@ -19,7 +19,7 @@
 
 import argparse, os
 from .version import __version__
-from .build import buildSite
+from .build import setupSite
 
 def checkPath(path):
     if not path or not os.path.exists(path):
@@ -52,7 +52,7 @@ def main():
     elif args["config"] is None: 
         args["config"] = "resources/trakai.json"
         
-    buildSite(**args)
+    setupSite(**args)
     
 if __name__ == "__main__": main()
 

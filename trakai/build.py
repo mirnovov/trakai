@@ -24,10 +24,10 @@ from .output import makePages, makeList, makePaginatedList, insertPreview, getTa
 from .utils import fread, log
 from .version import __version__
 
-def buildSite(**args):
+def setupSite(**args):
 	os.chdir(args["path"])
 	
-	# Default parameters.
+	# default parameters
 	params = {
 		"posts_path": "resources/content",
 		"templates_path": "resources/templates",
@@ -50,9 +50,10 @@ def buildSite(**args):
 		"cache_path": "resources/backup/trakai_cache.json",
 	}
 	
-	# If params.json exists, load it
-	if path.isfile(args["config"]): 
-		params.update(json.loads(fread(args["config"])))
+	# if params.json exists, load it
+	if path.isfile(args["config"]):
+		with open(args["config"], "r") as file: 
+			params.update(json.load(file))
 	
 	params["markdown_extensions"].append("meta") #meta should always be loaded
 	
@@ -63,12 +64,13 @@ def buildSite(**args):
 		"__silent": args["silent"]
 	})
 	
+	#override caching if set in args
 	if args["cache"]:
 		params["has_caching"] = True
 	elif not args["nocache"]:
 		params["has_caching"] = False
 			
-	# Set up Jinja, and load layouts.
+	# set up Jinja, and load layouts.
 	env = Environment(
 		loader = FileSystemLoader([
 			params["templates_path"],
@@ -78,15 +80,19 @@ def buildSite(**args):
 	)
 	env.globals = params 
 	
-	# Create a new blog directory from scratch, and create blog posts
+	# create a new blog directory from scratch, and create blog posts
 	if path.isdir(env.globals["output_path"]) and not env.globals["has_caching"]: 
 		shutil.rmtree(env.globals["output_path"])
 	
+	#finally, generate site content
+	generateSite(env)
+	return env
+	
+def generateSite(env):
 	feed_path = path.join(env.globals["output_path"],"feed.xml")
 	archive_path = path.join(env.globals["output_path"],"archive.html")
 	posts = makePages(env,env.globals["posts_path"], path.join(env.globals["output_path"],"posts"), "post.html")
-
-	# Create blog indices.    
+	    
 	if env.globals["has_pagination"]: 
 		makePaginatedList(env, posts, env.globals["output_path"], "list.html", page_mode="regular")
 	else: 
@@ -108,3 +114,5 @@ def buildSite(**args):
 				 makePaginatedList(env, tags[tag], path.join(env.globals["output_path"],"tags/{}/".format(tag.lower())), "list.html", page_mode="tags", current_tag=tag)
 			else:  
 				makeList(env, tags[tag], path.join(env.globals["output_path"],"tags/{}.html".format(tag.lower())), "list.html", page_mode="tags", current_tag=tag)
+				
+	return posts
