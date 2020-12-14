@@ -7,6 +7,7 @@ __pycache__
 venv/
 ENV/
 dist/
+build/
 
 # trakai
 example/resources/backup/

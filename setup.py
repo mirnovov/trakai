@@ -19,21 +19,22 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-import re
-from setuptools import setup
+import re, os, setuptools
 
 def getVersion():
-	with open("trakai/version.py", "r", encoding="utf-8") as file:
+	path = os.path.join(os.path.dirname(__file__),"trakai","version.py")
+	with open(path, "r", encoding="utf-8") as file:
 		version = re.search("__version__ = ['\"]((\d|\.)+)[\"']",file.read())
 		
 		if version: return version[1]
 		else: return None
 		
 def getReadMe():
-	with open("README.md", "r", encoding="utf-8") as file:
+	path = os.path.join(os.path.dirname(__file__),"README.md")
+	with open(path, "r", encoding="utf-8") as file:
 		long_description = file.read()
 
-setup(
+setuptools.setup(
 	name = "trakai",
 	version = getVersion(),
 	author = "novov",
@@ -42,6 +43,10 @@ setup(
 	long_description = getReadMe(),
 	long_description_content_type = "text/markdown",
 	url = "https://novov.neocities.org/projects/trakai.html",
+	packages = ["trakai"],
+	package_data = {
+		"trakai": ["templates/*.html", "templates/*.xml"],
+	},
 	license = "MIT",
 	classifiers = [
 		"Programming Language :: Python :: 3",
