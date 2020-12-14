@@ -38,6 +38,7 @@ def checkCache(env,cache,content):
 	
 def initCache(path):
 	if not os.path.isfile(path):
+		fwrite(path,"")
 		return {}
 	with open(path, "r") as file: 
 		return json.load(file)
