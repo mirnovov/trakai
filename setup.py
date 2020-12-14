@@ -32,7 +32,7 @@ def getVersion():
 def getReadMe():
 	path = os.path.join(os.path.dirname(__file__),"README.md")
 	with open(path, "r", encoding="utf-8") as file:
-		long_description = file.read()
+		return file.read()
 
 setuptools.setup(
 	name = "trakai",
