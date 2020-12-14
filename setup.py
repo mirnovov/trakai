@@ -33,7 +33,7 @@ def getReadMe():
 	with open("README.md", "r", encoding="utf-8") as file:
 		long_description = file.read()
 
-setuptools.setup(
+setup(
 	name = "trakai",
 	version = getVersion(),
 	author = "novov",
