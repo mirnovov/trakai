@@ -98,14 +98,14 @@ def makeList(env, posts, dst, layout, **params):
 def makePaginatedList(env, posts, dst, layout, **params): 
 	i, r, pagenum = 0, 2, 1
 	pages = [os.path.join(dst,"index.html")]
-	
-	while r < math.ceil(9 / env.globals["page_limit"]):
+
+	while r <= math.ceil(len(posts) / env.globals["page_limit"]):
 		pages.append(os.path.join(dst,"pages","{}.html".format(r)))
 		r += 1
 
 	while i < len(posts):
-	   makeList(env,
-		   		posts[i:i + env.globals["page_limit"]],
+		makeList(env,
+				posts[i:i + env.globals["page_limit"]],
 				pages[pagenum - 1],
 				"list.html",
 				name="blogindex{}".format(pagenum),
@@ -114,9 +114,9 @@ def makePaginatedList(env, posts, dst, layout, **params):
 				pagecount=len(pages),
 				**params)
 		
-	   i += env.globals["page_limit"]
-	   pagenum += 1
-   
+		i += env.globals["page_limit"]
+		pagenum += 1
+		
 def insertPreview(env, post, dst, layout):
 	class PreviewFinder(HTMLParser):
 		start, end, tag, nest = None, None, None, 0
